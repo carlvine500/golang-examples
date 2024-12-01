@@ -39,7 +39,7 @@ func init() {
         "IX", "V", "IV", "I"}
     RomanForDecimal = Memoize(func(x int, xs ...int) interface{} {
         if x < 0 || x > 3999 {
-            panic("RomanForDecimal() only handles integers [0, 3999]")
+            panic(any("RomanForDecimal() only handles integers [0, 3999]"))
         }
         var buffer bytes.Buffer
         for i, decimal := range decimals {

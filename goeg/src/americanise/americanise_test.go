@@ -15,6 +15,7 @@ package main
 
 import (
 	"bytes"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -22,38 +23,70 @@ import (
 	"testing"
 )
 
-const (
-	inFilename       = "input.txt"
-	expectedFilename = "expected.txt"
-	actualFilename   = "actual.txt"
-)
 
+	var inFilename       = "input.txt"
+	var expectedFilename = "expected.txt"
+	var actualFilename   = "actual.txt"
+
+func init() {
+	workDir,_ := os.Getwd()
+	fmt.Println("init workDir="+workDir)
+	inFilename = filepath.Join(workDir,inFilename)
+	expectedFilename = filepath.Join(workDir,expectedFilename)
+	actualFilename = filepath.Join(workDir,actualFilename)
+}
+
+func list(){
+	getwd, err2 := os.Getwd()
+	fmt.Println(getwd,err2)
+	path := "./"
+
+	// 读取目录
+	entries, err := os.ReadDir(path)
+	if err != nil {
+		fmt.Println("Error reading directory:", err)
+		return
+	}
+
+	// 遍历目录条目
+	for _, entry := range entries {
+		info, err := entry.Info()
+		if err != nil {
+			fmt.Println("Error getting info for", entry.Name(), ":", err)
+			continue
+		}
+
+		// 输出文件名和类型
+		fmt.Printf("Found file: %s, type: %v\n", entry.Name(), info.Mode())
+	}
+}
 func TestAmericanize(t *testing.T) {
+	list()
 	log.SetFlags(0)
 	log.Println("TEST americanize")
 
-	path, _ := filepath.Split(os.Args[0])
+	//path, _ := filepath.Split(os.Args[0])
 	var inFile, outFile *os.File
 	var err error
 
-	inFilename := filepath.Join(path, inFilename)
+	//inFilename := filepath.Join(path, inFilename)
 	if inFile, err = os.Open(inFilename); err != nil {
 		t.Fatal(err)
 	}
 	defer inFile.Close()
 
-	outFilename := filepath.Join(path, actualFilename)
-	if outFile, err = os.Create(outFilename); err != nil {
+	//outFilename := filepath.Join(path, actualFilename)
+	if outFile, err = os.Create(actualFilename); err != nil {
 		t.Fatal(err)
 	}
 	defer outFile.Close()
-	defer os.Remove(outFilename)
+	defer os.Remove(actualFilename)
 
 	if err := americanise(inFile, outFile); err != nil {
 		t.Fatal(err)
 	}
 
-	compare(outFilename, filepath.Join(path, expectedFilename), t)
+	compare(actualFilename, expectedFilename, t)
 }
 
 func compare(actual, expected string, t *testing.T) {

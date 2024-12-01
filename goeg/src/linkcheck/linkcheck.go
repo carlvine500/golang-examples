@@ -15,7 +15,7 @@ package main
 
 import (
     "fmt"
-    "linkcheck/linkutil"
+    "github.com/carlvine500/golang-examples/goeg/src/linkcheck/linkutil"
     "log"
     "net/http"
     "net/url"

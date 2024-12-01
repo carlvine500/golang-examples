@@ -28,6 +28,7 @@ func main() {
         {16, 17, 18, 19, 20}}
     fmt.Println("irregular:", irregularMatrix)
     slice := Flatten(irregularMatrix)
+    // 二维数组,每行3/4/5/6个元素的数组,
     fmt.Printf("1x%d: %v\n", len(slice), slice)
     fmt.Printf(" 3x%d: %v\n", neededRows(slice, 3), Make2D(slice, 3))
     fmt.Printf(" 4x%d: %v\n", neededRows(slice, 4), Make2D(slice, 4))
@@ -37,7 +38,7 @@ func main() {
     fmt.Println("Original:", slice)
     slice = UniqueInts(slice)
     fmt.Println("Unique:  ", slice)
-
+    // ini 文本解析,二维map
     iniData := []string{
         "; Cut down copy of Mozilla application.ini file",
         "",

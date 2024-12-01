@@ -21,56 +21,9 @@ import (
     "time"
 )
 
-type JSONInvoice struct {
-    Id         int
-    CustomerId int
-    Raised     string // time.Time in Invoice struct
-    Due        string // time.Time in Invoice struct
-    Paid       bool
-    Note       string
-    Items      []*Item
-}
-
-func (invoice Invoice) MarshalJSON() ([]byte, error) {
-    jsonInvoice := JSONInvoice{
-        invoice.Id,
-        invoice.CustomerId,
-        invoice.Raised.Format(dateFormat),
-        invoice.Due.Format(dateFormat),
-        invoice.Paid,
-        invoice.Note,
-        invoice.Items,
-    }
-    return json.Marshal(jsonInvoice)
-}
-
-func (invoice *Invoice) UnmarshalJSON(data []byte) (err error) {
-    var jsonInvoice JSONInvoice
-    if err = json.Unmarshal(data, &jsonInvoice); err != nil {
-        return err
-    }
-    var raised, due time.Time
-    if raised, err = time.Parse(dateFormat, jsonInvoice.Raised);
-        err != nil {
-        return err
-    }
-    if due, err = time.Parse(dateFormat, jsonInvoice.Due); err != nil {
-        return err
-    }
-    *invoice = Invoice{
-        jsonInvoice.Id,
-        jsonInvoice.CustomerId,
-        raised,
-        due,
-        jsonInvoice.Paid,
-        jsonInvoice.Note,
-        jsonInvoice.Items,
-    }
-    return nil
-}
-
+// 面向对象
 type JSONMarshaler struct{}
-
+// 有方法 MarshalInvoices <--  InvoicesMarshaler.MarshalInvoices
 func (JSONMarshaler) MarshalInvoices(writer io.Writer,
     invoices []*Invoice) error {
     encoder := json.NewEncoder(writer)
@@ -104,3 +57,54 @@ func (JSONMarshaler) UnmarshalInvoices(reader io.Reader) ([]*Invoice,
     err := decoder.Decode(&invoices)
     return invoices, err
 }
+
+// JSONInvoice 增加如下对象主要是为了 Raised/Due 的字符与时间的转换方便
+type JSONInvoice struct {
+    Id         int
+    CustomerId int
+    Raised     string // time.Time in Invoice struct
+    Due        string // time.Time in Invoice struct
+    Paid       bool
+    Note       string
+    Items      []*Item
+}
+
+// MarshalJSON encoder.Encode(invoice *Invoice) 自动调用这个方法
+func (invoice Invoice) MarshalJSON() ([]byte, error) {
+    jsonInvoice := JSONInvoice{
+        invoice.Id,
+        invoice.CustomerId,
+        invoice.Raised.Format(dateFormat),
+        invoice.Due.Format(dateFormat),
+        invoice.Paid,
+        invoice.Note,
+        invoice.Items,
+    }
+    return json.Marshal(jsonInvoice)
+}
+// UnmarshalJSON decoder.Decode(invoice *Invoice) 自动调用这个方法
+func (invoice *Invoice) UnmarshalJSON(data []byte) (err error) {
+    var jsonInvoice JSONInvoice
+    if err = json.Unmarshal(data, &jsonInvoice); err != nil {
+        return err
+    }
+    var raised, due time.Time
+    if raised, err = time.Parse(dateFormat, jsonInvoice.Raised);
+        err != nil {
+        return err
+    }
+    if due, err = time.Parse(dateFormat, jsonInvoice.Due); err != nil {
+        return err
+    }
+    *invoice = Invoice{
+        jsonInvoice.Id,
+        jsonInvoice.CustomerId,
+        raised,
+        due,
+        jsonInvoice.Paid,
+        jsonInvoice.Note,
+        jsonInvoice.Items,
+    }
+    return nil
+}
+

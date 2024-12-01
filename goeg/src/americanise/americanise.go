@@ -28,11 +28,13 @@ import (
 var britishAmerican = "british-american.txt"
 
 func init() {
-    dir, _ := filepath.Split(os.Args[0])
-    britishAmerican = filepath.Join(dir, britishAmerican)
+    workDir,_ := os.Getwd()
+    fmt.Println(workDir)
+    britishAmerican = filepath.Join(workDir, britishAmerican)
 }
 
 func main() {
+    //list();
     inFilename, outFilename, err := filenamesFromCommandLine()
     if err != nil {
         fmt.Println(err)
@@ -114,7 +116,7 @@ func makeReplacerFunction(file string) (func(string) string, error) {
         return nil, err
     }
     text := string(rawBytes)
-
+    // 返回函数中的这个map依然在调用端保留着
     usForBritish := make(map[string]string)
     lines := strings.Split(text, "\n")
     for _, line := range lines {
@@ -123,7 +125,7 @@ func makeReplacerFunction(file string) (func(string) string, error) {
             usForBritish[fields[0]] = fields[1]
         }
     }
-
+    //
     return func(word string) string {
         if usWord, found := usForBritish[word]; found {
             return usWord

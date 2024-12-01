@@ -14,9 +14,9 @@
 package main
 
 import (
+    "github.com/carlvine500/golang-examples/goeg/src/shaper_ans1/shapes"
     "image"
     "image/color"
-    "shaper_ans1/shapes"
 )
 
 func main() {

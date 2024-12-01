@@ -16,13 +16,13 @@ package main
 import (
     "bufio"
     "fmt"
+    "github.com/carlvine500/golang-examples/goeg/src/safeslice"
     "io"
     "log"
     "os"
     "path/filepath"
     "regexp"
     "runtime"
-    "safeslice"
 )
 
 var workers = runtime.NumCPU()

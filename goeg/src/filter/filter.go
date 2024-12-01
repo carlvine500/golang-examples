@@ -32,6 +32,8 @@ func main() {
     if algorithm == 1 {
         sink(filterSize(minSize, maxSize, filterSuffixes(suffixes, source(files))))
     } else {
+        //每个通道干完后都关闭, 多个通道内可并行加速
+        //把文件名读出来
         channel1 := source(files)
         channel2 := filterSuffixes(suffixes, channel1)
         channel3 := filterSize(minSize, maxSize, channel2)

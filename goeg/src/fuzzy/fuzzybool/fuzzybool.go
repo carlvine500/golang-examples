@@ -13,7 +13,7 @@
 package fuzzybool
 
 import "fmt"
-
+// 操作的是指针
 type FuzzyBool struct{ value float32 }
 
 func New(value interface{}) (*FuzzyBool, error) {

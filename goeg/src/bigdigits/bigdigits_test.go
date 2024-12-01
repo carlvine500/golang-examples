@@ -32,6 +32,7 @@ func TestBigDigits(t *testing.T) {
     if err != nil {
         t.Fatal(err)
     }
+    // 执行前先要go build准备可执行性文件
     executable := filepath.Join(path, "bigdigits")
     reader, writer, err := os.Pipe()
     if err != nil {

@@ -16,16 +16,16 @@ package main
 import (
     "bufio"
     "fmt"
+    "github.com/carlvine500/golang-examples/goeg/src/safemap"
     "io"
     "log"
     "os"
     "path/filepath"
     "regexp"
     "runtime"
-    "safemap"
 )
 
-var workers = runtime.NumCPU()
+var ncpu = runtime.NumCPU()
 
 func main() {
     runtime.GOMAXPROCS(runtime.NumCPU()) // Use all the machine's cores
@@ -33,14 +33,19 @@ func main() {
         fmt.Printf("usage: %s <file.log>\n", filepath.Base(os.Args[0]))
         os.Exit(1)
     }
-    lines := make(chan string, workers*4)
-    done := make(chan struct{}, workers)
+    lines := make(chan string, ncpu*4)
+    done := make(chan struct{}, ncpu)
     pageMap := safemap.New()
+    // 1协程读文件到lines
     go readLines(os.Args[1], lines)
+    // 4协程正则提取每行内容到map
     processLines(done, pageMap, lines)
+    // 4协程对应的4chan关闭
     waitUntil(done)
     showResults(pageMap)
 }
+
+
 
 func readLines(filename string, lines chan<- string) {
     file, err := os.Open(filename)
@@ -73,7 +78,7 @@ func processLines(done chan<- struct{}, pageMap safemap.SafeMap,
         }
         return 1
     }
-    for i := 0; i < workers; i++ {
+    for i := 0; i < ncpu; i++ {
         go func() {
             for line := range lines {
                 if matches := getRx.FindStringSubmatch(line);
@@ -87,7 +92,7 @@ func processLines(done chan<- struct{}, pageMap safemap.SafeMap,
 }
 
 func waitUntil(done <-chan struct{}) {
-    for i := 0; i < workers; i++ {
+    for i := 0; i < ncpu; i++ {
         <-done
     }
 }

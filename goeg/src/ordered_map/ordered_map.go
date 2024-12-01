@@ -15,8 +15,8 @@ package main
 
 import (
     "fmt"
+    "github.com/carlvine500/golang-examples/goeg/src/qtrac.eu/omap"
     "math"
-    "qtrac.eu/omap"
     "strings"
 )
 

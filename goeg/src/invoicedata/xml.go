@@ -48,7 +48,7 @@ type XMLItem struct {
     Note     string   `xml:"NOTE"`
 }
 
-
+// convert to XML
 func XMLInvoicesForInvoices(invoices []*Invoice) *XMLInvoices {
     xmlInvoices := &XMLInvoices{
         Version: fileVersion,

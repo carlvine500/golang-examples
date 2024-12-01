@@ -15,8 +15,8 @@ package linkutil_test
 
 import (
     "bufio"
+    "github.com/carlvine500/golang-examples/goeg/src/linkcheck/linkutil"
     "io"
-    "linkcheck/linkutil"
     "os"
     "reflect"
     "sort"

@@ -15,11 +15,11 @@ package main
 
 import (
     "fmt"
+    "github.com/carlvine500/golang-examples/goeg/src/shaper2/shapes"
     "image"
     "image/color"
     "log"
     "os"
-    "shaper2/shapes"
 )
 
 func main() {

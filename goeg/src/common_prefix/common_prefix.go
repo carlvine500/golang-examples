@@ -44,7 +44,9 @@ func main() {
             gap = " "
         }
         fmt.Println("]")
+        // 字符前缀
         cp := CommonPrefix(data)
+        // '/'分隔的路径前缀
         cpp := CommonPathPrefix(data)
         equal := "=="
         if cpp != cp {
@@ -65,6 +67,7 @@ func CommonPrefix(texts []string) string {
     }
     var common bytes.Buffer
 FINISH:
+    // 多个串, 一个个字符往后核对, 如果有不一样的就结束
     for column := 0; column < len(components[0]); column++ {
         char := components[0][column]
         for row := 1; row < len(components); row++ {
@@ -79,6 +82,7 @@ FINISH:
 }
 
 func CommonPathPrefix(paths []string) string {
+    // 核对/分隔后的文件件名是否一样
     const separator = string(filepath.Separator)
     components := make([][]string, len(paths))
     for i, path := range paths {

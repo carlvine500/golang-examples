@@ -102,7 +102,7 @@ func Index(xs interface{}, x interface{}) int {
 func InSliceReflect(xs interface{}, x interface{}) bool {
     return IndexReflect(xs, x) > -1
 }
-
+// 反射的用法
 func IndexReflectX(xs interface{}, x interface{}) int { // Long-winded way
     if slice := reflect.ValueOf(xs); slice.Kind() == reflect.Slice {
         for i := 0; i < slice.Len(); i++ {

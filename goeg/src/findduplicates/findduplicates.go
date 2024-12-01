@@ -67,10 +67,13 @@ func makeWalkFunc(infoChan chan fileInfo,
     return func(path string, info os.FileInfo, err error) error {
         if err == nil && info.Size() > 0 &&
             (info.Mode()&os.ModeType == 0) {
+
             if info.Size() < maxSizeOfSmallFile ||
                 runtime.NumGoroutine() > maxGoroutines {
+                // 小文件同步求hash, 协程超了也同步求hash
                 processFile(path, info, infoChan, nil)
             } else {
+                // 异步求hash
                 waiter.Add(1)
                 go processFile(path, info, infoChan,
                     func() { waiter.Done() })
@@ -91,6 +94,7 @@ func processFile(filename string, info os.FileInfo,
         return
     }
     defer file.Close()
+    // 求hash值套路: hash=sha1.New()  io.Copy(hash, file)  hash.Sum(nil)
     hash := sha1.New()
     if size, err := io.Copy(hash, file);
         size != info.Size() || err != nil {

@@ -16,7 +16,7 @@
 package omap_test
 
 import (
-    "qtrac.eu/omap"
+    "github.com/carlvine500/golang-examples/goeg/src/qtrac.eu/omap"
     "strings"
     "testing"
 )

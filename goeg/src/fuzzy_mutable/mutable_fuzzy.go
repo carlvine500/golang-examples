@@ -14,7 +14,7 @@ package main
 
 import (
     "fmt"
-    "fuzzy_mutable/fuzzybool"
+    "github.com/carlvine500/golang-examples/goeg/src/fuzzy_mutable/fuzzybool"
 )
 
 func main() {

@@ -27,12 +27,12 @@ func main() {
     }
 
     stringOfDigits := os.Args[1]
-    for row := range bigDigits[0] {
+    for row := range bigDigits[0] {// 按行遍历
         line := ""
         for column := range stringOfDigits {
             digit := stringOfDigits[column] - '0'
             if 0 <= digit && digit <= 9 {
-                line += bigDigits[digit][row] + "  "
+                line += bigDigits[digit][row] + "  "// 每个大数字的一行
             } else {
                 log.Fatal("invalid whole number")
             }

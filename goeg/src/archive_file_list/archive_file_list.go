@@ -94,13 +94,13 @@ func ArchiveFileList(file string) ([]string, error) {
 }
 
 func ArchiveFileList2(file string) ([]string, error) {
-    switch suffix := Suffix(file); suffix { // Naïve and noncanonical!
+    switch suffix := Suffix(file); suffix { // switch可以带计算表达式
     case ".gz":
         return GzipFileList(file)
     case ".tar":
-        fallthrough
+        fallthrough//往后找方法
     case ".tar.gz":
-        fallthrough
+        fallthrough//往后找方法
     case ".tgz":
         return TarFileList(file)
     case ".zip":
@@ -129,7 +129,7 @@ func ArchiveFileList4(file string) ([]string, error) {
     switch Suffix(file) { // Canonical
     case ".gz":
         return GzipFileList(file)
-    case ".tar", ".tar.gz", ".tgz":
+    case ".tar", ".tar.gz", ".tgz": // switch可以合并写在一起
         return TarFileList(file)
     case ".zip":
         return ZipFileList(file)

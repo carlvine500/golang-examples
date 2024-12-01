@@ -15,7 +15,7 @@ package main
 
 import (
 	"fmt"
-	"stacker/stack"
+	"github.com/carlvine500/golang-examples/goeg/src/stacker/stack"
 	"strings"
 )
 

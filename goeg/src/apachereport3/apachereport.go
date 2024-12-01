@@ -33,6 +33,7 @@ func main() {
         os.Exit(1)
     }
     lines := make(chan string, workers*4)
+    // 4cpu,results里边有4组结果
     results := make(chan map[string]int, workers)
     go readLines(os.Args[1], lines)
     getRx := regexp.MustCompile(`GET[ \t]+([^ \t\n]+[.]html?)`)
@@ -40,6 +41,7 @@ func main() {
         go processLines(results, getRx, lines)
     }
     totalForPage := make(map[string]int)
+    //取到了四组结果就结束了
     merge(results, totalForPage)
     showResults(totalForPage)
 }

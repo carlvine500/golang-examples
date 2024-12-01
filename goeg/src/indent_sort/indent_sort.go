@@ -18,7 +18,7 @@ import (
     "sort"
     "strings"
 )
-
+// 缩进的字符排序,采用多层对象嵌套 Entry.Entries
 var original = []string{
     "Nonmetals",
     "    Hydrogen",
@@ -63,12 +63,14 @@ func SortedIndentedStrings(slice []string) []string {
 }
 
 func populateEntries(slice []string) Entries {
-    indent, indentSize := computeIndent(slice)
+    // 计算第一个缩进,缩进符号可以是: ' '/'\t'
+    indentSpaceStr, indentSize := computeIndent(slice)
     entries := make(Entries, 0)
     for _, item := range slice {
-        i, level := 0, 0
-        for strings.HasPrefix(item[i:], indent) {
-            i += indentSize
+        from, level := 0, 0
+        // 算出缩进位置from, 算出缩进的级数level
+        for strings.HasPrefix(item[from:], indentSpaceStr) {
+            from += indentSize
             level++
         }
         key := strings.ToLower(strings.TrimSpace(item))
@@ -80,7 +82,7 @@ func populateEntries(slice []string) Entries {
 func computeIndent(slice []string) (string, int) {
     for _, item := range slice {
         if len(item) > 0 && (item[0] == ' ' || item[0] == '\t') {
-            whitespace := rune(item[0])
+            whitespace := rune(item[0])// 取第一个字符可能是' '/'\t', 后续的核对是否连续是它
             for i, char := range item[1:] {
                 if char != whitespace {
                     return strings.Repeat(string(whitespace), i), i
@@ -91,16 +93,21 @@ func computeIndent(slice []string) (string, int) {
     return "", 0
 }
 
-func addEntry(level int, key, value string, entries *Entries) {
-    if level == 0 {
+func addEntry(levelCnt int, key, value string, entries *Entries) {
+    if levelCnt == 0 {
         *entries = append(*entries, Entry{key, value, make(Entries, 0)})
     } else {
         /*
            theEntries := *entries
            lastEntry := &theEntries[theEntries.Len()-1]
-           addEntry(level-1, key, value, &lastEntry.children)
+           addEntry(levelCnt-1, key, value, &lastEntry.children)
         */
-        addEntry(level-1, key, value,
+        //x
+        //a #levelCnt=0
+        // b
+        //  c
+        // #c levelCnt2,找0级entries尾元素a的子集;levelCnt1,再找1级entries尾元素b的子集;levelCnt0,添加到集合中
+        addEntry(levelCnt-1, key, value,
             &((*entries)[entries.Len()-1].children))
     }
 }
