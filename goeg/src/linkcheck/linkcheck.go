@@ -28,17 +28,17 @@ import (
 var (
     externalLinkRx *regexp.Regexp
     addChannel     chan string
-    queryChannel   chan string
-    seenChannel    chan bool
+    queryChannel       chan string
+    isDuplicateChannel chan bool
 )
 
 func init() {
     externalLinkRx = regexp.MustCompile("^(http|ftp|mailto):")
     // These *must* be unbuffered so that they block and properly serialize
     // access to the map
-    addChannel = make(chan string)
-    queryChannel = make(chan string)
-    seenChannel = make(chan bool)
+    addChannel = make(chan string)       //增加url
+    queryChannel = make(chan string)     //查询url
+    isDuplicateChannel = make(chan bool) //结果
 }
 
 func main() {
@@ -60,22 +60,24 @@ func main() {
 
 func prepareMap() {
     go func() {
-        seen := make(map[string]bool)
+        uniqKeyMap := make(map[string]bool)
         for {
             select {
             case url := <-addChannel:
-                seen[url] = true
+                uniqKeyMap[url] = true
             case url := <-queryChannel:
-                _, found := seen[url]
-                seenChannel <- found
+                _, found := uniqKeyMap[url]
+                // 多协程在这里安全吗?
+                isDuplicateChannel <- found
             }
         }
     }()
 }
 
 func alreadySeen(url string) bool {
+    // 扔个url到queryChannel看 uniqKeyMap是否存在重复, 重复就返回true, 不重复则加入uniqKeyMap
     queryChannel <- url
-    if <-seenChannel {
+    if <-isDuplicateChannel {
         return true
     }
     addChannel <- url
