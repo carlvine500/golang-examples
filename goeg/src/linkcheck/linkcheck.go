@@ -62,12 +62,12 @@ func prepareMap() {
     go func() {
         uniqKeyMap := make(map[string]bool)
         for {
+            // 0元素chan,此处全是阻塞成顺序处理了
             select {
-            case url := <-addChannel:
+            case url := <-addChannel: // 0元素chan,出是阻塞的,有元素就在map中标记了
                 uniqKeyMap[url] = true
-            case url := <-queryChannel:
+            case url := <-queryChannel: // 0元素的chan,有元素就查一查,查到了就告诉0元素的的isDuplicateChannel
                 _, found := uniqKeyMap[url]
-                // 多协程在这里安全吗?
                 isDuplicateChannel <- found
             }
         }
